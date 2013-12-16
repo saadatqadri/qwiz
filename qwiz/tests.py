@@ -11,7 +11,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from qwiz.views import home_page
-
+from qwiz.models import Question 
 
 class HomePageTest(TestCase):
 	def test_root_url_resolvers_to_home_page_view(self):
@@ -38,4 +38,27 @@ class HomePageTest(TestCase):
 			{'new_item_text': "A new question"}
 		)
 		self.assertEqual(response.content.decode(), expected_html)
+
+class QuestionModelTest(TestCase):
+
+	def test_saving_and_retrieving_questions(self):
+
+		first_question = Question()
+		first_question.text = 'The first (ever) question'
+		first_question.save()
+
+		second_question = Question()
+		second_question.text = 'The second question'
+		second_question.save()
+
+		saved_questions = Question.objects.all()
+		self.assertEqual(saved_questions.count(), 2)
+
+		first_saved_question = saved_questions[0]
+		second_saved_question = saved_questions[1]
+
+		self.assertEqual(first_saved_question.text, 'The first (ever) question')
+		self.assertEqual(second_saved_question.text, 'The second question')
+		
+
 
