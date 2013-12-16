@@ -14,6 +14,11 @@ class NewVisitorTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 
+	def check_for_row_in_qwiz_table(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_element_by_tag_name('tr')
+		self.assertIn(row_text, [row.text for row in rows])
+
 	def test_can_start_a_quiz_and_retrieve_it_later(self):
 
 		#John's heard about a cool new online learning management tool. He goes to check out the homepage
@@ -40,25 +45,21 @@ class NewVisitorTest(unittest.TestCase):
 
 		inputbox.send_keys(Keys.ENTER)
 
-		table = self.browser.find_element_by_id('id_qwiz_table')
-		rows = table.find_elements_by_tag_name('tr')
-
-		self.assertIn('1: Have you taken a course on Python before?', [row.text for row in rows])
+		self.check_for_row_in_qwiz_table('1: Have you taken a course on Python before?')
 
 		# There is still a text box inviting him to add another quiz question. He enters
 		# "Do you know what the term object-oriented programming means?"
 
 		inputbox = self.browser.find_element_by_id('id_new_question')
-		inputbox.send_keys('Do you know what the term object-oriented programming means')
+		inputbox.send_keys('Do you know what the term object-oriented programming means?')
 		inputbox.send_keys(Keys.ENTER)
 
 		# The page updates again, and shows both questions in the quiz list
+		
+		self.check_for_row_in_qwiz_table('1: Have you taken a course on Python before?')
+		self.check_for_row_in_qwiz_table('2: Do you know what the term object-oriented programming means?')
 
-		table = self.browser.find_element_by_id('id_qwiz_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Have you taken a course on Python before?', [row.text for row in rows])
-		self.assertIn('2: Do you know what the term object-oriented programming means', [row.text for row in rows])
-
+			
 		# John wonders whether the site will remember his quiz. Then he sees that the site has generated a unique URL 
 		# for his quiz, and there is some explanatory text to that effect
 
