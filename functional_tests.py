@@ -10,16 +10,15 @@ class NewVisitorTest(unittest.TestCase):
 		self.browser = webdriver.Firefox()
 		self.browser.implicitly_wait(1)
 
-	def teardown(self):
+	def tearDown(self):
 		self.browser.quit()
 
 	def test_can_start_a_quiz_and_retrieve_it_later(self):
 
 		#John's heard about a cool new online learning management tool. He goes to check out the homepage
 		self.browser.get('http://localhost:8000')
-
 		# He notices the page title and header mention class quizzes
-		self.assertIn('Quiz', self.browser.title)
+		self.assertIn('Qwiz', self.browser.title)
 		self.fail('Finish the test')
 
 		# He is invited to create a quiz right away. 
