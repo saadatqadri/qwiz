@@ -27,21 +27,41 @@ class HomePageTest(TestCase):
 	def test_home_page_can_save_a_POST_request(self):
 		request = HttpRequest()
 		request.method = 'POST'
-		request.POST['item_text'] = 'A new question'
+		request.POST['question_text'] = 'A new question'
 
 		response = home_page(request)
 
 		self.assertEqual(Question.objects.all().count(), 1)
 		new_question = Question.objects.all()[0]
 		self.assertEqual(new_question.text, 'A new question')
-		
-		self.assertIn('A new question', response.content.decode())
 
-		expected_html = render_to_string(
-			'home.html',
-			{'new_item_text': "A new question"}
-		)
-		self.assertEqual(response.content.decode(), expected_html)
+	def test_home_page_redirects_after_POST(self):
+		request = HttpRequest()
+		request.method = 'POST'
+		request.POST['question_text'] = 'A new question'
+
+		response = home_page(request)
+
+		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response['location'], '/')
+
+	def test_can_display_more_than_one_question(self):
+		Question.objects.create(text="Question 1")
+		Question.objects.create(text="Question 2")
+
+		request= HttpRequest()
+		request.method = 'GET'
+		response = home_page(request)
+
+		self.assertIn('Question 1', response.content.decode())
+		self.assertIn('Question 2', response.content.decode())
+
+
+
+	def test_home_page_only_saves_items_when_necessary(self):
+		request = HttpRequest()
+		home_page(request)
+		self.assertEqual(Question.objects.all().count(), 0)
 
 class QuestionModelTest(TestCase):
 
