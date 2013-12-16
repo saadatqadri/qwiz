@@ -31,6 +31,10 @@ class HomePageTest(TestCase):
 
 		response = home_page(request)
 
+		self.assertEqual(Question.objects.all().count(), 1)
+		new_question = Question.objects.all()[0]
+		self.assertEqual(new_question.text, 'A new question')
+		
 		self.assertIn('A new question', response.content.decode())
 
 		expected_html = render_to_string(
@@ -59,6 +63,6 @@ class QuestionModelTest(TestCase):
 
 		self.assertEqual(first_saved_question.text, 'The first (ever) question')
 		self.assertEqual(second_saved_question.text, 'The second question')
-		
+
 
 
