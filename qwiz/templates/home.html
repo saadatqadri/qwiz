@@ -1,3 +1,16 @@
 <html>
-	<title>Qwiz</title>
+	<head>
+		<title>Qwiz</title>
+	</head>
+	<body>
+		<h1>Your Qwiz</title>
+		<form method="POST">
+			<input name="item_text" id="id_new_question" placeholder="Enter a quiz question"/>
+			{% csrf_token %}
+		</form>
+		
+		<table id="id_qwiz_table">
+			<tr><td>1: {{ new_item_text }}</td></tr>
+		</table>
+	</body>
 </html>

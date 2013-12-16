@@ -40,22 +40,29 @@ class NewVisitorTest(unittest.TestCase):
 
 		inputbox.send_keys(Keys.ENTER)
 
-		table = self.browser.find_element_by_id('id_list_table')
+		table = self.browser.find_element_by_id('id_qwiz_table')
 		rows = table.find_elements_by_tag_name('tr')
 
-		self.assertTrue(
-			any(row.text == '1: Have you taken a course on Python before?' for row in rows)
-		)
+		self.assertIn('1: Have you taken a course on Python before?', [row.text for row in rows])
 
 		# There is still a text box inviting him to add another quiz question. He enters
 		# "Do you know what the term object-oriented programming means?"
 
-		self.fail('Finish the test!')
+		inputbox = self.browser.find_element_by_id('id_new_question')
+		inputbox.send_keys('Do you know what the term object-oriented programming means')
+		inputbox.send_keys(Keys.ENTER)
 
 		# The page updates again, and shows both questions in the quiz list
 
+		table = self.browser.find_element_by_id('id_qwiz_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Have you taken a course on Python before?', [row.text for row in rows])
+		self.assertIn('2: Do you know what the term object-oriented programming means', [row.text for row in rows])
+
 		# John wonders whether the site will remember his quiz. Then he sees that the site has generated a unique URL 
 		# for his quiz, and there is some explanatory text to that effect
+
+		self.fail("Finish the test!")
 
 		# John visits that URL - his quiz is still there
 
