@@ -1,18 +1,5 @@
-<html>
-	<head>
-		<title>Qwiz</title>
-	</head>
-	<body>
-		<h1>Start a new Qwiz</title>
-		<form method="POST" action="/qwiz/new">
-			<input name="question_text" id="id_new_question" placeholder="Enter a quiz question"/>
-			{% csrf_token %}
-		</form>
-		
-		<table id="id_qwiz_table">
-			{% for question in questions %}
-				<tr><td>{{ forloop.counter 	}}: {{ question.text }}</td></tr>
-			{% endfor %}
-		</table>
-	</body>
-</html>
+{% extends 'base.html' %}
+
+{% block header_text %}Start a new Qwiz{% endblock %}
+
+{% block form_action %}/qwiz/new{% endblock %}

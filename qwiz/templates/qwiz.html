@@ -1,18 +1,13 @@
-<html>
-	<head>
-		<title>Qwiz</title>
-	</head>
-	<body>
-		<h1>Your Qwiz</title>
-		<form method="POST" action="/qwiz/{{ qwiz.id }}/new_question">
-			<input name="question_text" id="id_new_question" placeholder="Enter a quiz question"/>
-			{% csrf_token %}
-		</form>
-		
+{% extends 'base.html' %}
+
+{% block header_text %}Your Quiz{% endblock %}
+
+{% block form_action %}/qwiz/{{ qwiz.id }}/new_question{% endblock %}
+
+{% block table %}	
 		<table id="id_qwiz_table">
 			{% for question in qwiz.question_set.all %}
 				<tr><td>{{ forloop.counter 	}}: {{ question.text }}</td></tr>
 			{% endfor %}
 		</table>
-	</body>
-</html>
+{% endblock %}
