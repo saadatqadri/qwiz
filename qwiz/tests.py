@@ -57,7 +57,6 @@ class HomePageTest(TestCase):
 		self.assertIn('Question 2', response.content.decode())
 
 
-
 	def test_home_page_only_saves_items_when_necessary(self):
 		request = HttpRequest()
 		home_page(request)
