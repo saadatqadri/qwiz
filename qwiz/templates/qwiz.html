@@ -4,13 +4,13 @@
 	</head>
 	<body>
 		<h1>Your Qwiz</title>
-		<form method="POST" action="/qwiz/new">
+		<form method="POST" action="/qwiz/{{ qwiz.id }}/new_question">
 			<input name="question_text" id="id_new_question" placeholder="Enter a quiz question"/>
 			{% csrf_token %}
 		</form>
 		
 		<table id="id_qwiz_table">
-			{% for question in questions %}
+			{% for question in qwiz.question_set.all %}
 				<tr><td>{{ forloop.counter 	}}: {{ question.text }}</td></tr>
 			{% endfor %}
 		</table>

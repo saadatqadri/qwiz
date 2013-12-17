@@ -60,19 +60,31 @@ class QwizAndQuestionModelTest(TestCase):
 class QwizViewTest(TestCase):
 
 	def test_users_qwiz_template(self):
-		response = self.client.get('/qwiz/the-only-qwiz-in-the-world/')
+		qwiz = Qwiz.objects.create()
+		response = self.client.get('/qwiz/%d/' % (qwiz.id, ))
 		self.assertTemplateUsed(response, 'qwiz.html')
 
-	def test_displays_all_questions(self):
-		qwiz = Qwiz.objects.create()
-		Question.objects.create(text='Question 1', qwiz=qwiz)
-		Question.objects.create(text='Question 2', qwiz=qwiz)
+	def test_displays_only_questions_for_that_qwiz(self):
+		correct_qwiz = Qwiz.objects.create()
+		Question.objects.create(text='Question 1', qwiz=correct_qwiz)
+		Question.objects.create(text='Question 2', qwiz=correct_qwiz)
 
-		response = self.client.get('/qwiz/the-only-qwiz-in-the-world/')
+		other_qwiz = Qwiz.objects.create()
+		Question.objects.create(text='other Question 1', qwiz=other_qwiz)
+		Question.objects.create(text='other Question 2', qwiz=other_qwiz)
+
+		response = self.client.get('/qwiz/%d/' % (correct_qwiz.id,))
 
 		self.assertContains(response, 'Question 1')
 		self.assertContains(response, 'Question 2')
+		self.assertNotContains(response, 'other Question 1')
+		self.assertNotContains(response, 'other Question 2')
 
+	def test_passes_correct_qwiz_to_template(self):
+		other_qwiz = Qwiz.objects.create()
+		correct_qwiz = Qwiz.objects.create()
+		response = self.client.get('/qwiz/%d/' % (correct_qwiz.id, ))
+		self.assertEqual(response.context['qwiz'], correct_qwiz)	
 
 class NewQwizTest(TestCase):
 
@@ -91,6 +103,33 @@ class NewQwizTest(TestCase):
 			'/qwiz/new',
 			data={'question_text': 'A new question'}
 		)
+		new_qwiz = Qwiz.objects.all()[0]
+		self.assertRedirects(response,'/qwiz/%d/' % (new_qwiz.id,))
 
-		self.assertRedirects(response,'/qwiz/the-only-qwiz-in-the-world/')
+class NewQuestionTest(TestCase):
 
+	def test_can_save_a_POST_request_to_an_existing_qwiz(self):
+		other_qwiz = Qwiz.objects.create()
+		correct_qwiz = Qwiz.objects.create()
+
+		self.client.post(
+			'/qwiz/%d/new_question' % (correct_qwiz.id, ),
+			data = {'question_text': 'A new question for an existing qwiz'}
+		)
+
+		self.assertEqual(Question.objects.all().count(), 1)
+		new_question = Question.objects.all()[0]
+		self.assertEqual(new_question.text, 'A new question for an existing qwiz')
+		self.assertEqual(new_question.qwiz, correct_qwiz)
+
+	def test_redirects_to_qwiz_view(self):
+
+		other_qwiz = Qwiz.objects.create()
+		correct_qwiz = Qwiz.objects.create()
+
+		response = self.client.post(
+			'/qwiz/%d/new_question' % (correct_qwiz.id,),
+			data = {'question_text': 'A new question for an existing qwiz'}
+		)
+
+		self.assertRedirects(response, '/qwiz/%d/' % (correct_qwiz.id,))
