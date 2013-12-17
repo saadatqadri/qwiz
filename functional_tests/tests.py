@@ -86,10 +86,50 @@ class NewVisitorTest(LiveServerTestCase):
 		self.assertNotIn('Python before', page_text)
 		self.assertIn('enjoying this class', page_text)
 
-		# Satisfied, Francis moves on
+		# Satisfied, Francis moves on 
 
 		self.fail("Finish the test!")
 
 		# John visits that URL - his quiz is still there
-
 		# Satisfied, he moves on to prepare his lecture
+		# Once John has entered the text for the question, he enters the answer type and the possible answers to the question. For the first question
+		# The answer is multiple choice, Yes or No. John clicks on the multiple choice answer type and enters the two options.
+
+		# John also specifies the answer to the question
+		# John shares the link to the quiz with his students. He wants to make sure that his students have absorbed the material
+		# that he delivered during the lecture
+
+		# Katie is a student in John's class, and is reading the lecture when she see's a note from John to answer the Qwiz
+
+		# Katie clicks on the link, and she is presented with the qwiz interface. She reads the first question, and she's taken a course on Python 
+		# before, so she decides to answer yes.
+
+		# As Katie clicks on the "Yes" button, John is observing the answers update.
+
+		# Analytics on time spent before answering
+
+	def test_layout_and_styling(self):
+
+		# John goes to the home page
+		self.browser.get(self.live_server_url)
+		self.browser.set_window_size(1024,768)
+
+		# He notices the input box is nicely centered
+		inputbox = self.browser.find_element_by_tag_name('input')
+		self.assertAlmostEqual(
+			inputbox.location['x'] + inputbox.size['width'] / 2,
+			512,
+			delta=3
+		)
+
+		# He starts a new list and sees the inputbo is nicely centered there too
+
+		inputbox.send_keys('testing\n')
+		inputbox = self.browser.find_element_by_tag_name('input')
+		self.assertAlmostEqual(
+			inputbox.location['x'] + inputbox.size['width'] / 2,
+			512,
+			delta=3
+		)
+
+
