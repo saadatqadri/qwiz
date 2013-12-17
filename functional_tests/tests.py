@@ -78,7 +78,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 		# Francis get his own unique URL
 		francis_qwiz_url = self.browser.current_url
-		self.assertRegex(francis_qwiz_url, '/qwiz/.+')
+		self.assertRegexpMatches(francis_qwiz_url, '/qwiz/.+')
 		self.assertNotEqual(francis_qwiz_url, john_qwiz_url)
 
 		# Again, there is no trace of John's qwiz
@@ -87,8 +87,6 @@ class NewVisitorTest(LiveServerTestCase):
 		self.assertIn('enjoying this class', page_text)
 
 		# Satisfied, Francis moves on
-
-
 
 		self.fail("Finish the test!")
 

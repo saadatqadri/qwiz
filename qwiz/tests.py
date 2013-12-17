@@ -43,19 +43,7 @@ class HomePageTest(TestCase):
 		response = home_page(request)
 
 		self.assertEqual(response.status_code, 302)
-		self.assertEqual(response['location'], '/')
-
-	def test_can_display_more_than_one_question(self):
-		Question.objects.create(text="Question 1")
-		Question.objects.create(text="Question 2")
-
-		request= HttpRequest()
-		request.method = 'GET'
-		response = home_page(request)
-
-		self.assertIn('Question 1', response.content.decode())
-		self.assertIn('Question 2', response.content.decode())
-
+		self.assertEqual(response['location'], '/qwiz/the-only-qwiz-in-the-world/')
 
 	def test_home_page_only_saves_items_when_necessary(self):
 		request = HttpRequest()
@@ -82,6 +70,22 @@ class QuestionModelTest(TestCase):
 
 		self.assertEqual(first_saved_question.text, 'The first (ever) question')
 		self.assertEqual(second_saved_question.text, 'The second question')
+
+
+class QwizViewTest(TestCase):
+
+	def test_users_qwiz_template(self):
+		response = self.client.get('/qwiz/the-only-qwiz-in-the-world/')
+		self.assertTemplateUsed(response, 'qwiz.html')
+
+	def test_displays_all_questions(self):
+		Question.objects.create(text='Question 1')
+		Question.objects.create(text='Question 2')
+
+		response = self.client.get('/qwiz/the-only-qwiz-in-the-world/')
+
+		self.assertContains(response, 'Question 1')
+		self.assertContains(response, 'Question 2')
 
 
 

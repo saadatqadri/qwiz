@@ -3,8 +3,8 @@
 		<title>Qwiz</title>
 	</head>
 	<body>
-		<h1>start a new Qwiz</title>
-		<form method="POST">
+		<h1>Your Qwiz</title>
+		<form method="POST" action="/">
 			<input name="question_text" id="id_new_question" placeholder="Enter a quiz question"/>
 			{% csrf_token %}
 		</form>
